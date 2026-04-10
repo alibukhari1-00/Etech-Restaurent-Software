@@ -27,6 +27,14 @@
             border-color: #10b981; 
             box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.2);
         }
+        .field-error {
+            color: #fca5a5;
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+        .input-error {
+            border-color: #f87171 !important;
+        }
         .vibrant-green { color: #10b981; }
         .bg-vibrant-green { background-color: #10b981; }
         ::-webkit-scrollbar { width: 8px; }
@@ -68,7 +76,8 @@
                         </div>
                         <div>
                             <label class="block mb-2 text-sm font-medium text-slate-400">Cuisine Type</label>
-                            <select name="restaurant_type" class="input-field w-full rounded-xl p-4 outline-none text-white appearance-none">
+                            <select name="restaurant_type" required class="input-field w-full rounded-xl p-4 outline-none text-white appearance-none">
+                                <option value="">Select a cuisine</option>
                                 <option>Fast Food</option>
                                 <option>Desi / Fine Dine</option>
                                 <option>Cafe</option>
@@ -78,7 +87,7 @@
                         </div>
                         <div>
                             <label class="block mb-2 text-sm font-medium text-slate-400">Total Number of Branches</label>
-                            <input type="number" name="total_branches" placeholder="1" class="input-field w-full rounded-xl p-4 outline-none text-white">
+                            <input type="number" name="total_branches" required placeholder="1" class="input-field w-full rounded-xl p-4 outline-none text-white" min="1">
                         </div>
                     </div>
                 </section>
@@ -91,7 +100,8 @@
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                         <div>
                             <label class="block mb-2 text-sm font-medium text-slate-400">Total Employee Count</label>
-                            <select name="staff_size" class="input-field w-full rounded-xl p-4 outline-none text-white">
+                            <select name="staff_size" required class="input-field w-full rounded-xl p-4 outline-none text-white">
+                                <option value="">Select a range</option>
                                 <option>1 - 10</option>
                                 <option>11 - 30</option>
                                 <option>31 - 50</option>
@@ -100,11 +110,11 @@
                         </div>
                         <div>
                             <label class="block mb-2 text-sm font-medium text-slate-400">Daily Customer Footfall</label>
-                            <input type="text" name="daily_footfall" placeholder="Average daily guests" class="input-field w-full rounded-xl p-4 outline-none text-white">
+                            <input type="text" name="daily_footfall" required placeholder="Average daily guests" class="input-field w-full rounded-xl p-4 outline-none text-white">
                         </div>
                         <div>
                             <label class="block mb-2 text-sm font-medium text-slate-400">Number of Kitchens</label>
-                            <input type="number" name="kitchen_count" placeholder="1" class="input-field w-full rounded-xl p-4 outline-none text-white">
+                            <input type="number" name="kitchen_count" required placeholder="1" class="input-field w-full rounded-xl p-4 outline-none text-white" min="1">
                         </div>
                     </div>
                 </section>
@@ -131,6 +141,7 @@
                                     <input type="checkbox" name="order_online_apps" class="w-5 h-5 accent-emerald-500"> <span>Online Apps (FoodPanda, etc.)</span>
                                 </label>
                             </div>
+                            <div id="error-order-channels" class="field-error text-red-300 text-sm mt-2 hidden"></div>
                         </div>
                         <div>
                             <label class="block mb-4 text-sm font-medium text-slate-400">Delivery Order Sources</label>
@@ -145,9 +156,10 @@
                                     <input type="checkbox" name="source_apps" class="w-5 h-5 accent-emerald-500"> <span>Third-party Portals</span>
                                 </label>
                             </div>
+                            <div id="error-order-sources" class="field-error text-red-300 text-sm mt-2 hidden"></div>
                             <div class="mt-6">
                                 <label class="block mb-2 text-sm font-medium text-slate-400">Total Menu Items (Approx.)</label>
-                                <input type="text" name="menu_size" placeholder="e.g. 50+ items" class="input-field w-full rounded-xl p-4 outline-none text-white">
+                                <input type="text" name="menu_size" required placeholder="e.g. 50+ items" class="input-field w-full rounded-xl p-4 outline-none text-white">
                             </div>
                         </div>
                     </div>
@@ -164,7 +176,7 @@
                             <p class="text-sm text-slate-400 mb-4">Do your waiters have smartphones for taking orders?</p>
                             <div class="flex space-x-4">
                                 <label class="flex items-center space-x-2 cursor-pointer">
-                                    <input type="radio" name="waiter_smartphones" value="Yes" class="w-4 h-4 accent-emerald-500"> <span>Yes</span>
+                                    <input type="radio" name="waiter_smartphones" value="Yes" required class="w-4 h-4 accent-emerald-500"> <span>Yes</span>
                                 </label>
                                 <label class="flex items-center space-x-2 cursor-pointer">
                                     <input type="radio" name="waiter_smartphones" value="No" class="w-4 h-4 accent-emerald-500"> <span>No</span>
@@ -173,7 +185,8 @@
                         </div>
                         <div>
                             <label class="block mb-2 text-sm font-medium text-slate-400">Current Billing System</label>
-                            <select name="current_billing" class="input-field w-full rounded-xl p-4 outline-none text-white">
+                            <select name="current_billing" required class="input-field w-full rounded-xl p-4 outline-none text-white">
+                                <option value="">Select current billing</option>
                                 <option>Manual (Paper Register)</option>
                                 <option>Legacy Software (Offline POS)</option>
                                 <option>Spreadsheets (Excel/Sheets)</option>
@@ -187,10 +200,12 @@
                                 <label class="flex items-center space-x-2 text-sm"><input type="checkbox" name="pay_wallet" value="Yes"> <span>Mobile Wallets</span></label>
                                 <label class="flex items-center space-x-2 text-sm"><input type="checkbox" name="pay_qr" value="Yes"> <span>QR Codes</span></label>
                             </div>
+                            <div id="error-payment-methods" class="field-error text-red-300 text-sm mt-2 hidden"></div>
                         </div>
                         <div>
                             <label class="block mb-2 text-sm font-medium text-slate-400">FBR POS Integration Required?</label>
-                            <select name="fbr_required" class="input-field w-full rounded-xl p-4 outline-none text-white">
+                            <select name="fbr_required" required class="input-field w-full rounded-xl p-4 outline-none text-white">
+                                <option value="">Select an option</option>
                                 <option>No</option>
                                 <option>Yes (Mandatory)</option>
                                 <option>Not Sure</option>
@@ -206,7 +221,7 @@
                     </div>
                     <div>
                         <label class="block mb-3 text-sm font-medium text-slate-400">What is the biggest challenge you want to solve? (e.g. Preventing theft, speeding up service, inventory accuracy)</label>
-                        <textarea name="main_goal" rows="5" placeholder="Describe your requirements in detail..." class="input-field w-full rounded-2xl p-5 outline-none text-white"></textarea>
+                        <textarea name="main_goal" required rows="5" placeholder="Describe your requirements in detail..." class="input-field w-full rounded-2xl p-5 outline-none text-white"></textarea>
                     </div>
                 </section>
 
@@ -226,14 +241,153 @@
         const form = document.getElementById('surveyForm');
         const message = document.getElementById('formMessage');
 
+        const validationLabels = {
+            restaurant_name: 'Restaurant name',
+            location: 'Branch address / city',
+            restaurant_type: 'Cuisine type',
+            total_branches: 'Total number of branches',
+            staff_size: 'Total employee count',
+            daily_footfall: 'Daily customer footfall',
+            kitchen_count: 'Number of kitchens',
+            menu_size: 'Total menu items',
+            waiter_smartphones: 'Digital readiness',
+            current_billing: 'Current billing system',
+            fbr_required: 'FBR POS integration requirement',
+            main_goal: 'Primary objective'
+        };
+
+        const checkboxGroups = [
+            {
+                names: ['order_dinein', 'order_takeaway', 'order_delivery', 'order_online_apps'],
+                label: 'Please select at least one active order channel.',
+                errorId: 'error-order-channels'
+            },
+            {
+                names: ['source_phone', 'source_whatsapp', 'source_apps'],
+                label: 'Please select at least one delivery order source.',
+                errorId: 'error-order-sources'
+            },
+            {
+                names: ['pay_cash', 'pay_card', 'pay_wallet', 'pay_qr'],
+                label: 'Please select at least one payment method.',
+                errorId: 'error-payment-methods'
+            }
+        ];
+
+        function setMessage(text, isError) {
+            message.textContent = text;
+            message.className = 'rounded-2xl p-5 mt-6 text-center';
+            message.classList.add(isError ? 'bg-red-500/15' : 'bg-emerald-500/15', 'border', isError ? 'border-red-500' : 'border-emerald-500', isError ? 'text-red-200' : 'text-emerald-200');
+            message.classList.remove('hidden');
+        }
+
+        function clearErrors() {
+            document.querySelectorAll('.field-error').forEach(el => {
+                el.textContent = '';
+                el.classList.add('hidden');
+            });
+            document.querySelectorAll('.input-error').forEach(el => el.classList.remove('input-error'));
+            message.classList.add('hidden');
+        }
+
+        function showFieldError(field, messageText) {
+            if (!field) return;
+            const wrapper = field.closest('div');
+            if (!wrapper) return;
+            let errorEl = wrapper.querySelector('.field-error');
+            if (!errorEl) {
+                errorEl = document.createElement('div');
+                errorEl.className = 'field-error text-red-300 text-sm mt-2';
+                wrapper.appendChild(errorEl);
+            }
+            errorEl.textContent = messageText;
+            errorEl.classList.remove('hidden');
+            field.classList.add('input-error');
+        }
+
+        function showGroupError(group, messageText) {
+            const errorEl = document.getElementById(group.errorId);
+            if (errorEl) {
+                errorEl.textContent = messageText;
+                errorEl.classList.remove('hidden');
+            }
+            const firstField = form.querySelector(`[name="${group.names[0]}"]`);
+            if (firstField) firstField.classList.add('input-error');
+        }
+
+        function validateField(name) {
+            const field = form.querySelector(`[name="${name}"]`);
+            if (!field) return '';
+
+            const value = field.type === 'checkbox' || field.type === 'radio'
+                ? field.checked
+                : String(field.value || '').trim();
+
+            if (field.type === 'radio') {
+                const radioGroup = form.querySelectorAll(`[name="${name}"]`);
+                const selected = Array.from(radioGroup).some(radio => radio.checked);
+                if (!selected) return `${validationLabels[name]} is required.`;
+                return '';
+            }
+
+            if (!value) {
+                return `${validationLabels[name]} is required.`;
+            }
+
+            if (name === 'total_branches' || name === 'kitchen_count') {
+                const numberValue = Number(value);
+                if (!Number.isFinite(numberValue) || numberValue <= 0) {
+                    return `${validationLabels[name]} must be greater than zero.`;
+                }
+            }
+
+            return '';
+        }
+
+        function validateCheckboxGroups(formData) {
+            let groupError = '';
+
+            checkboxGroups.forEach(group => {
+                const hasValue = group.names.some(name => formData.get(name));
+                if (!hasValue) {
+                    groupError = group.label;
+                }
+            });
+
+            return groupError;
+        }
+
         form.addEventListener('submit', async (event) => {
             event.preventDefault();
-            message.className = 'rounded-2xl p-5 mt-6 text-center';
-            message.textContent = 'Sending your request...';
-            message.classList.remove('hidden');
-            
+            clearErrors();
+
             const formData = new FormData(form);
+            let hasError = false;
+
+            Object.keys(validationLabels).forEach(name => {
+                const error = validateField(name);
+                if (error) {
+                    hasError = true;
+                    const field = form.querySelector(`[name="${name}"]`);
+                    showFieldError(field, error);
+                }
+            });
+
+            checkboxGroups.forEach(group => {
+                const hasValue = group.names.some(name => formData.get(name));
+                if (!hasValue) {
+                    hasError = true;
+                    showGroupError(group, group.label);
+                }
+            });
+
+            if (hasError) {
+                setMessage('Please fix the highlighted fields and try again.', true);
+                return;
+            }
+
             const body = new URLSearchParams(formData);
+            setMessage('Sending your request...', false);
 
             try {
                 const response = await fetch('/api/submit', {
@@ -244,16 +398,13 @@
 
                 const result = await response.json();
                 if (response.ok) {
-                    message.textContent = result.message || 'Submission successful.';
-                    message.classList.add('bg-emerald-500/15', 'border', 'border-emerald-500', 'text-emerald-200');
+                    setMessage(result.message || 'Submission successful.', false);
                     form.reset();
                 } else {
-                    message.textContent = result.error || 'Submission failed. Please try again later.';
-                    message.classList.add('bg-red-500/15', 'border', 'border-red-500', 'text-red-200');
+                    setMessage(result.error || 'Submission failed. Please try again later.', true);
                 }
             } catch (err) {
-                message.textContent = 'Unable to send form. Please check your network and try again.';
-                message.classList.add('bg-red-500/15', 'border', 'border-red-500', 'text-red-200');
+                setMessage('Unable to send form. Please check your network and try again.', true);
             }
         });
     </script>

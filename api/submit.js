@@ -1,4 +1,6 @@
-const nodemailer = require('nodemailer');
+const fs = require('fs').promises;
+const path = require('path');
+const os = require('os');
 
 function escapeCsv(value) {
   if (value == null) return '';
@@ -107,19 +109,76 @@ function normalizeCheckboxes(data) {
   };
 }
 
+function validateSubmission(data) {
+  const fieldLabels = {
+    restaurant_name: 'Restaurant name',
+    location: 'Location',
+    restaurant_type: 'Cuisine type',
+    total_branches: 'Total branches',
+    staff_size: 'Staff size',
+    daily_footfall: 'Daily customer footfall',
+    kitchen_count: 'Kitchen count',
+    menu_size: 'Menu size',
+    waiter_smartphones: 'Smartphone readiness',
+    current_billing: 'Current billing system',
+    fbr_required: 'FBR POS integration requirement',
+    main_goal: 'Primary objective'
+  };
+
+  const errors = [];
+  const requiredFields = Object.keys(fieldLabels);
+
+  for (const field of requiredFields) {
+    if (!data[field] || !String(data[field]).trim()) {
+      errors.push(`${fieldLabels[field]} is required.`);
+    }
+  }
+
+  if (data.total_branches && Number(data.total_branches) <= 0) {
+    errors.push('Total number of branches must be greater than 0.');
+  }
+
+  if (data.kitchen_count && Number(data.kitchen_count) <= 0) {
+    errors.push('Number of kitchens must be greater than 0.');
+  }
+
+  const orderChannels = ['order_dinein', 'order_takeaway', 'order_delivery', 'order_online_apps'];
+  if (!orderChannels.some((name) => data[name])) {
+    errors.push('At least one active order channel must be selected.');
+  }
+
+  const orderSources = ['source_phone', 'source_whatsapp', 'source_apps'];
+  if (!orderSources.some((name) => data[name])) {
+    errors.push('At least one delivery order source must be selected.');
+  }
+
+  const paymentMethods = ['pay_cash', 'pay_card', 'pay_wallet', 'pay_qr'];
+  if (!paymentMethods.some((name) => data[name])) {
+    errors.push('At least one payment method must be selected.');
+  }
+
+  return errors;
+}
+
+async function appendCsv(csvContent) {
+  const csvDir = path.join(os.tmpdir(), 'restaurant-survey');
+  const csvPath = path.join(csvDir, 'submissions.csv');
+  await fs.mkdir(csvDir, { recursive: true });
+
+  const fileExists = await fs.stat(csvPath).then(() => true).catch(() => false);
+  if (!fileExists) {
+    await fs.writeFile(csvPath, csvContent, 'utf8');
+  } else {
+    const rowsOnly = csvContent.split('\n').slice(1).join('\n');
+    await fs.appendFile(csvPath, `${rowsOnly}\n`, 'utf8');
+  }
+
+  return csvPath;
+}
+
 module.exports = async (req, res) => {
   if (req.method !== 'POST') {
     res.status(405).json({ error: 'Method not allowed. Use POST.' });
-    return;
-  }
-
-  const env = process.env;
-  const GMAIL_USER = env.GMAIL_USER;
-  const GMAIL_PASS = env.GMAIL_PASS;
-  const TO_EMAIL = env.TO_EMAIL || env.GMAIL_USER;
-
-  if (!GMAIL_USER || !GMAIL_PASS || !TO_EMAIL) {
-    res.status(500).json({ error: 'Server is not configured. Please set GMAIL_USER, GMAIL_PASS, and TO_EMAIL.' });
     return;
   }
 
@@ -131,40 +190,20 @@ module.exports = async (req, res) => {
     return;
   }
 
+  const validationErrors = validateSubmission(data);
+  if (validationErrors.length > 0) {
+    res.status(400).json({ error: validationErrors.join(' ') });
+    return;
+  }
+
   const submission = normalizeCheckboxes(data);
   const csvContent = buildCsv(submission);
 
-  const plainText = `New Restaurant Discovery submission:\n\n${Object.entries(submission)
-    .map(([key, value]) => `${key}: ${value}`)
-    .join('\n')}`;
-
-  const transporter = nodemailer.createTransport({
-    service: 'gmail',
-    auth: {
-      user: GMAIL_USER,
-      pass: GMAIL_PASS
-    }
-  });
-
-  const mailOptions = {
-    from: `"Restaurant Survey" <${GMAIL_USER}>`,
-    to: TO_EMAIL,
-    subject: 'New Restaurant Discovery Submission',
-    text: plainText,
-    attachments: [
-      {
-        filename: 'restaurant-survey.csv',
-        content: csvContent,
-        contentType: 'text/csv'
-      }
-    ]
-  };
-
   try {
-    await transporter.sendMail(mailOptions);
-    res.status(200).json({ message: 'Submission received. Email sent successfully.' });
+    const savedPath = await appendCsv(csvContent);
+    res.status(200).json({ message: `Submission saved to CSV. Path: ${savedPath}` });
   } catch (error) {
-    console.error('Email send failed:', error);
-    res.status(500).json({ error: 'Unable to send email. Check server logs and environment settings.' });
+    console.error('CSV save failed:', error);
+    res.status(500).json({ error: 'Unable to save submission to CSV.' });
   }
 };

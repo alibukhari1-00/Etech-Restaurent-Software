@@ -15,13 +15,6 @@ This project provides a simple Vercel backend for your existing `index.html` for
 ## Setup
 1. Add the files to your Git repository.
 2. Deploy to Vercel.
-3. In Vercel dashboard, set these Environment Variables:
-   - `GMAIL_USER` = `i.alibukhari1@gmail.com`
-   - `GMAIL_PASS` = your Gmail app password or application password
-   - `TO_EMAIL` = `i.alibukhari1@gmail.com`
-
-## Gmail note
-If you use 2FA, create an App Password in Google Account settings and use that as `GMAIL_PASS`.
 
 ## Deployment
 Push to GitHub and connect the repository to Vercel. Vercel will serve `public/index.html` and the backend at `/api/submit`.
@@ -29,7 +22,14 @@ Push to GitHub and connect the repository to Vercel. Vercel will serve `public/i
 ## Vercel configuration
 A `vercel.json` file is included so Vercel routes static pages from `public/` and functions from `api/`.
 
+## CSV storage
+Submissions are now saved to a backend CSV file at runtime.
+
+## Validation
+The frontend enforces required fields and checkbox groups, with inline field-level error messages for missing inputs. The backend also validates that every required field is present and that at least one order channel, one delivery source, and one payment method are selected.
+
+> Note: Vercel serverless functions use an ephemeral filesystem, so `/tmp` storage is not persistent across all invocations or deployments. For stable storage you should use a database or cloud storage service.
+
 ## Troubleshooting
-- If email fails, check Vercel logs and verify the Gmail credentials.
 - If the form shows a terms-of-service error, the live deployment may still be serving an old page (for example the previous Formspree form action). Redeploy from this repository and confirm the live site uses the updated `public/index.html`.
 - If the form does not submit, confirm the form action is `/api/submit` and the API route exists in the deployed project.
