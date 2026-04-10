@@ -17,7 +17,7 @@ This project provides a simple Vercel backend for your existing `index.html` for
 2. Deploy to Vercel.
 3. In Vercel dashboard, set these Environment Variables:
    - `GMAIL_USER` = `i.alibukhari1@gmail.com`
-   - `GMAIL_PASS` = your Gmail app password
+   - `GMAIL_PASS` = Aliops@9911
    - `TO_EMAIL` = `i.alibukhari1@gmail.com`
 
 ## Gmail note
